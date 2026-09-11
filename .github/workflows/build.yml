@@ -21,18 +21,20 @@ jobs:
             cp -r project_files/* .
           fi
 
-      # --- ADD THIS NEW STEP HERE ---
-      - name: Create Dummy .env.example
+      - name: Create Dummy Configuration Files
         run: |
           touch .env.example
           touch .env
-      # ------------------------------
 
       - name: Set up Java 17
         uses: actions/setup-java@v4
         with:
           distribution: 'temurin'
           java-version: '17'
+
+      - name: Generate Missing Debug Keystore
+        run: |
+          keytool -genkey -v -keystore debug.keystore -storepass android -alias androiddebugkey -keypass android -keyalg RSA -keysize 2048 -validity 10000 -dname "CN=Android Debug,O=Android,C=US"
 
       - name: Grant Gradle Permissions
         run: chmod +x gradlew || true
